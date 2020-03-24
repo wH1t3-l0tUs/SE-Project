@@ -298,6 +298,21 @@ public class RecordFragment extends Fragment {
             }
         });
 
+        private String getTempFilename() {
+            String filepath = Environment.getExternalStorageDirectory().getPath();
+            File file = new File(filepath,AUDIO_RECORDER_FOLDER);
+    
+            if (!file.exists()) {
+                file.mkdir();
+            }
+    
+            File tempFile = new File(filepath, AUDIO_RECORDER_TEMP_FILE);
+    
+            if(tempFile.exists())
+                tempFile.delete();
+            return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
+        }
+
         btnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -323,37 +338,6 @@ public class RecordFragment extends Fragment {
             file.mkdirs();
         }
         return (file.getAbsolutePath() + "/" + mId + AUDIO_RECORDER_FILE_EXT_WAV);
-    }
-
-    private String getTempFilename() {
-        String filepath = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(filepath,AUDIO_RECORDER_FOLDER);
-
-        if (!file.exists()) {
-            file.mkdir();
-        }
-
-        File tempFile = new File(filepath, AUDIO_RECORDER_TEMP_FILE);
-
-        if(tempFile.exists())
-            tempFile.delete();
-        return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
-    }
-
-    private void startRecording() {
-        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
-        int i = recorder.getState();
-        if (i==1)
-            recorder.startRecording();
-        isRecording = true;
-        recordingThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                writeAudioDataToFile();
-            }
-        }, "AudioRecord Thread");
-        recordingThread.start();
     }
 
     private void writeAudioDataToFile() {
@@ -388,6 +372,16 @@ public class RecordFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void disableButton() {
+        btnGetText.setEnabled(true);
+        btnStartRecord.setEnabled(false);
+        btnStartRecord.setBackgroundResource(R.drawable.record_shape_disable);
+        btnPlay.setEnabled(false);
+        btnPlay.setBackgroundResource(R.drawable.play_retry_disable);
+        btnRetry.setBackgroundResource(R.drawable.play_retry_disable);
+        btnRetry.setEnabled(false);
     }
 
     private void stopRecording() {
@@ -447,6 +441,22 @@ public class RecordFragment extends Fragment {
         }
     }
 
+    private void startRecording() {
+        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
+        int i = recorder.getState();
+        if (i==1)
+            recorder.startRecording();
+        isRecording = true;
+        recordingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                writeAudioDataToFile();
+            }
+        }, "AudioRecord Thread");
+        recordingThread.start();
+    }
+
     private void WriteWaveFileHeader(
             FileOutputStream out, long totalAudioLen,
             long totalDataLen, long longSampleRate, int channels,
@@ -499,42 +509,6 @@ public class RecordFragment extends Fragment {
         header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
         out.write(header, 0, 44);
-    }
-
-    private void jsonParse() {
-        String url = main_url + "/text/category/" + mCatId + "/random";
-        mTextView.setText("");
-        circleBar.setVisibility(View.VISIBLE);
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject jsonObject = response.getJSONObject("resp");
-                    mText = jsonObject.getString("text");
-                    mId = jsonObject.getString("id");
-                    mTextView.setText(mText);
-                    circleBar.setVisibility(View.INVISIBLE);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization-Key", "812f2448624c42899fbf794f54f591f9");
-                headers.put("accept", "application/json");
-                return headers;
-            }
-        };
-        mQueue.add(request);
     }
 
     private void getCategory() {
@@ -631,13 +605,39 @@ public class RecordFragment extends Fragment {
         t.start();
     }
 
-    private void disableButton() {
-        btnGetText.setEnabled(true);
-        btnStartRecord.setEnabled(false);
-        btnStartRecord.setBackgroundResource(R.drawable.record_shape_disable);
-        btnPlay.setEnabled(false);
-        btnPlay.setBackgroundResource(R.drawable.play_retry_disable);
-        btnRetry.setBackgroundResource(R.drawable.play_retry_disable);
-        btnRetry.setEnabled(false);
+    private void jsonParse() {
+        String url = main_url + "/text/category/" + mCatId + "/random";
+        mTextView.setText("");
+        circleBar.setVisibility(View.VISIBLE);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject jsonObject = response.getJSONObject("resp");
+                    mText = jsonObject.getString("text");
+                    mId = jsonObject.getString("id");
+                    mTextView.setText(mText);
+                    circleBar.setVisibility(View.INVISIBLE);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization-Key", "812f2448624c42899fbf794f54f591f9");
+                headers.put("accept", "application/json");
+                return headers;
+            }
+        };
+        mQueue.add(request);
     }
 }

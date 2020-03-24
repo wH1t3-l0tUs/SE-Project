@@ -155,6 +155,47 @@ public class EditFragment extends Fragment {
         btnDone.setBackgroundResource(R.drawable.play_retry_bg);
     }
 
+    private void SendEditText(String id, String text) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("text", text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = main_url + "/text/" + id;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String code = response.getString("code");
+                    if (code.equals("200")) {
+                        Log.d("Edit: ","Edit successful");
+                    } else {
+                        Log.d("Edit: ", "Edit failed");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }){
+            @Override
+            public HashMap<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization-Key", "812f2448624c42899fbf794f54f591f9");
+                headers.put("accept", "application/json");
+                headers.put("Authorization", "Bearer " + mToken);
+                return headers;
+            }
+        };
+        mQueue.add(request);
+    }
+
     private void getVoiceRef() {
         String url = main_url + "/voice/random";
         mEditText.setText("");
@@ -197,15 +238,9 @@ public class EditFragment extends Fragment {
         mQueue.add(request);
     }
 
-    private void DownloadVoice(Uri uri) {
-        downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-
-        request.setTitle("Download Voice");
-        request.setDescription("Download voice mp3 file");
-        request.setDestinationInExternalPublicDir("/VoiceDownload", mId + subpath);
-        request.setVisibleInDownloadsUi(true);
-        downloadManager.enqueue(request);
+    private void deleteFile() {
+        File file = new File(getFilename() + mId + subpath);
+        file.delete();
     }
 
     private String getFilename(){
@@ -218,56 +253,21 @@ public class EditFragment extends Fragment {
         return (file.getAbsolutePath());
     }
 
-    private void deleteFile() {
-        File file = new File(getFilename() + mId + subpath);
-        file.delete();
-    }
-
-    private void SendEditText(String id, String text) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("text", text);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String url = main_url + "/text/" + id;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String code = response.getString("code");
-                    if (code.equals("200")) {
-                        Log.d("Edit: ","Edit successful");
-                    } else {
-                        Log.d("Edit: ", "Edit failed");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }){
-            @Override
-            public HashMap<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization-Key", "812f2448624c42899fbf794f54f591f9");
-                headers.put("accept", "application/json");
-                headers.put("Authorization", "Bearer " + mToken);
-                return headers;
-            }
-        };
-        mQueue.add(request);
-    }
-
     private void disableButton() {
         btnPlay.setEnabled(false);
         btnPlay.setBackgroundResource(R.drawable.record_shape_disable);
         btnDone.setEnabled(false);
         btnDone.setBackgroundResource(R.drawable.play_retry_disable);
+    }
+
+    private void DownloadVoice(Uri uri) {
+        downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+
+        request.setTitle("Download Voice");
+        request.setDescription("Download voice mp3 file");
+        request.setDestinationInExternalPublicDir("/VoiceDownload", mId + subpath);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
     }
 }
