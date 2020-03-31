@@ -193,15 +193,6 @@ public class RecordFragment extends Fragment {
 
         disableButton();
 
-        btnGetText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                jsonParse();
-                btnStartRecord.setEnabled(true);
-                btnStartRecord.setBackgroundResource(R.drawable.recordshape);
-            }
-        });
-
         btnStartRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,6 +237,15 @@ public class RecordFragment extends Fragment {
                         btnStartRecord.changeState();
                         break;
                 }
+            }
+        });
+        
+        btnGetText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jsonParse();
+                btnStartRecord.setEnabled(true);
+                btnStartRecord.setBackgroundResource(R.drawable.recordshape);
             }
         });
 
