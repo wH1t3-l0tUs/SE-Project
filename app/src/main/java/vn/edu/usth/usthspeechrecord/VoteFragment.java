@@ -163,17 +163,7 @@ public class VoteFragment extends Fragment {
         return view;
     }
 
-    private void DownloadVoice(Uri uri) {
-        downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-
-        request.setTitle("Download Voice");
-        request.setDescription("Download voice mp3 file");
-        request.setDestinationInExternalPublicDir("/VoiceDownload", mId + subpath);
-        request.setVisibleInDownloadsUi(true);
-        downloadManager.enqueue(request);
-    }
-
+    
     private void init() {
         getVoiceRef();
         enableButton();
@@ -220,6 +210,27 @@ public class VoteFragment extends Fragment {
         };
         mQueue.add(request);
     }
+    
+    private void DownloadVoice(Uri uri) {
+        downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+
+        request.setTitle("Download Voice");
+        request.setDescription("Download voice mp3 file");
+        request.setDestinationInExternalPublicDir("/VoiceDownload", mId + subpath);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
+    }
+    
+    private void disableButton() {
+        btnPlay.setEnabled(false);
+        btnPlay.setBackgroundResource(R.drawable.record_shape_disable);
+        btnLike.setEnabled(false);
+        btnLike.setBackgroundResource(R.drawable.play_retry_disable);
+        btnDislike.setEnabled(false);
+        btnDislike.setBackgroundResource(R.drawable.play_retry_disable);
+    }
+
 
     private String getFilename(){
         String filepath = Environment.getExternalStorageDirectory().getPath();
@@ -272,14 +283,7 @@ public class VoteFragment extends Fragment {
         mQueue.add(request);
     }
 
-    private void disableButton() {
-        btnPlay.setEnabled(false);
-        btnPlay.setBackgroundResource(R.drawable.record_shape_disable);
-        btnLike.setEnabled(false);
-        btnLike.setBackgroundResource(R.drawable.play_retry_disable);
-        btnDislike.setEnabled(false);
-        btnDislike.setBackgroundResource(R.drawable.play_retry_disable);
-    }
+    
 
     private void enableButton() {
         btnPlay.setEnabled(true);
