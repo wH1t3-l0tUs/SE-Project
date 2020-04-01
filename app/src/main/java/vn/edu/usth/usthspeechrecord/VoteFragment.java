@@ -58,18 +58,20 @@ public class VoteFragment extends Fragment {
     public VoteFragment() {
     }
 
-    public static VoteFragment newInstance(String token) {
-        VoteFragment voteFragment = new VoteFragment();
-        Bundle args = new Bundle();
-        args.putString("TOKEN", token);
-        voteFragment.setArguments(args);
-        return voteFragment;
-    }
+   
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQueue = VolleySingleton.getInstance(getActivity().getApplicationContext()).getRequestQueue();
+    }
+    
+     public static VoteFragment newInstance(String token) {
+        VoteFragment voteFragment = new VoteFragment();
+        Bundle args = new Bundle();
+        args.putString("TOKEN", token);
+        voteFragment.setArguments(args);
+        return voteFragment;
     }
 
     @Override
@@ -211,16 +213,7 @@ public class VoteFragment extends Fragment {
         mQueue.add(request);
     }
     
-    private void DownloadVoice(Uri uri) {
-        downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-
-        request.setTitle("Download Voice");
-        request.setDescription("Download voice mp3 file");
-        request.setDestinationInExternalPublicDir("/VoiceDownload", mId + subpath);
-        request.setVisibleInDownloadsUi(true);
-        downloadManager.enqueue(request);
-    }
+    
     
     private void disableButton() {
         btnPlay.setEnabled(false);
@@ -240,6 +233,17 @@ public class VoteFragment extends Fragment {
             file.mkdirs();
         }
         return (file.getAbsolutePath());
+    }
+    
+    private void DownloadVoice(Uri uri) {
+        downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+
+        request.setTitle("Download Voice");
+        request.setDescription("Download voice mp3 file");
+        request.setDestinationInExternalPublicDir("/VoiceDownload", mId + subpath);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
     }
 
     private void deleteFile() {
