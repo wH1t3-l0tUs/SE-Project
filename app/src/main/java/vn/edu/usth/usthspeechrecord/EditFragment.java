@@ -146,7 +146,15 @@ public class EditFragment extends Fragment {
         return view;
     }
 
-    private void init() {
+  
+    private void SendEditText(String id, String text) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("text", text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+       private void init() {
         if (getFilename()!=null) deleteFile();
         getVoiceRef();
         btnPlay.setEnabled(true);
@@ -155,13 +163,6 @@ public class EditFragment extends Fragment {
         btnDone.setBackgroundResource(R.drawable.play_retry_bg);
     }
 
-    private void SendEditText(String id, String text) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("text", text);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         String url = main_url + "/text/" + id;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
