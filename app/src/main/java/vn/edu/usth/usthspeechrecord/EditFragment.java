@@ -154,14 +154,7 @@ public class EditFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-       private void init() {
-        if (getFilename()!=null) deleteFile();
-        getVoiceRef();
-        btnPlay.setEnabled(true);
-        btnPlay.setBackgroundResource(R.drawable.recordshape);
-        btnDone.setEnabled(true);
-        btnDone.setBackgroundResource(R.drawable.play_retry_bg);
-    }
+      
 
 
         String url = main_url + "/text/" + id;
@@ -242,6 +235,14 @@ public class EditFragment extends Fragment {
     private void deleteFile() {
         File file = new File(getFilename() + mId + subpath);
         file.delete();
+    }
+     private void init() {
+        if (getFilename()!=null) deleteFile();
+        getVoiceRef();
+        btnPlay.setEnabled(true);
+        btnPlay.setBackgroundResource(R.drawable.recordshape);
+        btnDone.setEnabled(true);
+        btnDone.setBackgroundResource(R.drawable.play_retry_bg);
     }
 
     private String getFilename(){
