@@ -51,9 +51,7 @@ public class EditFragment extends Fragment {
     String subpath;
     String pathToFile, mtext, mId;
 
-    public EditFragment() {
-        // Required empty public constructor
-    }
+   
 
     public static EditFragment newInstance(String token) {
         EditFragment editFragment = new EditFragment();
@@ -67,6 +65,9 @@ public class EditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQueue = VolleySingleton.getInstance(getActivity().getApplicationContext()).getRequestQueue();
+    }
+     public EditFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -132,19 +133,7 @@ public class EditFragment extends Fragment {
             }
         });
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = mEditText.getText().toString();
-                SendEditText(mId, text);
-                Toast.makeText(getActivity().getApplicationContext(), "Đã chỉnh sửa", Toast.LENGTH_SHORT).show();
-
-                deleteFile();
-                getVoiceRef();
-            }
-        });
-        return view;
-    }
+      
 
   
     private void SendEditText(String id, String text) {
@@ -235,6 +224,19 @@ public class EditFragment extends Fragment {
     private void deleteFile() {
         File file = new File(getFilename() + mId + subpath);
         file.delete();
+    }
+          btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = mEditText.getText().toString();
+                SendEditText(mId, text);
+                Toast.makeText(getActivity().getApplicationContext(), "Đã chỉnh sửa", Toast.LENGTH_SHORT).show();
+
+                deleteFile();
+                getVoiceRef();
+            }
+        });
+        return view;
     }
      private void init() {
         if (getFilename()!=null) deleteFile();
