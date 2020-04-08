@@ -51,9 +51,7 @@ public class EditFragment extends Fragment {
     String subpath;
     String pathToFile, mtext, mId;
 
-    public EditFragment() {
-        // Required empty public constructor
-    }
+   
 
     public static EditFragment newInstance(String token) {
         EditFragment editFragment = new EditFragment();
@@ -67,6 +65,9 @@ public class EditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQueue = VolleySingleton.getInstance(getActivity().getApplicationContext()).getRequestQueue();
+    }
+     public EditFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -132,37 +133,6 @@ public class EditFragment extends Fragment {
             }
         });
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = mEditText.getText().toString();
-                SendEditText(mId, text);
-                Toast.makeText(getActivity().getApplicationContext(), "Đã chỉnh sửa", Toast.LENGTH_SHORT).show();
-
-                deleteFile();
-                getVoiceRef();
-            }
-        });
-        return view;
-    }
-
-    private void init() {
-        if (getFilename()!=null) deleteFile();
-        getVoiceRef();
-        btnPlay.setEnabled(true);
-        btnPlay.setBackgroundResource(R.drawable.recordshape);
-        btnDone.setEnabled(true);
-        btnDone.setBackgroundResource(R.drawable.play_retry_bg);
-    }
-
-    private void SendEditText(String id, String text) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("text", text);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         String url = main_url + "/text/" + id;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
@@ -195,6 +165,15 @@ public class EditFragment extends Fragment {
         };
         mQueue.add(request);
     }
+     private void SendEditText(String id, String text) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("text", text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+      
+
 
     private void getVoiceRef() {
         String url = main_url + "/voice/random";
@@ -241,6 +220,27 @@ public class EditFragment extends Fragment {
     private void deleteFile() {
         File file = new File(getFilename() + mId + subpath);
         file.delete();
+    }
+          btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = mEditText.getText().toString();
+                SendEditText(mId, text);
+                Toast.makeText(getActivity().getApplicationContext(), "Đã chỉnh sửa", Toast.LENGTH_SHORT).show();
+
+                deleteFile();
+                getVoiceRef();
+            }
+        });
+        return view;
+    }
+     private void init() {
+        if (getFilename()!=null) deleteFile();
+        getVoiceRef();
+        btnPlay.setEnabled(true);
+        btnPlay.setBackgroundResource(R.drawable.recordshape);
+        btnDone.setEnabled(true);
+        btnDone.setBackgroundResource(R.drawable.play_retry_bg);
     }
 
     private String getFilename(){
