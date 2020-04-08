@@ -133,19 +133,6 @@ public class EditFragment extends Fragment {
             }
         });
 
-      
-
-  
-    private void SendEditText(String id, String text) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("text", text);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-      
-
-
         String url = main_url + "/text/" + id;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
@@ -178,6 +165,15 @@ public class EditFragment extends Fragment {
         };
         mQueue.add(request);
     }
+     private void SendEditText(String id, String text) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("text", text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+      
+
 
     private void getVoiceRef() {
         String url = main_url + "/voice/random";
