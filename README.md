@@ -14,4 +14,5 @@
   + SYSTEM DESIGN SPECIFICATION: [Link](https://docs.google.com/document/d/1XHzlUdk3SCqihPRAJq0ItyZ8-Qas5uhJ6QJyZn2Zs8c/edit?usp=sharing)  
 
 4- Video related
-  + [Link](https://www.youtube.com/watch?v=HOQasEWaGrQ)
+  + [Video 1:](https://www.youtube.com/watch?v=HOQasEWaGrQ)
+  + [Video 2:](https://www.youtube.com/watch?v=a7T5x_xP3yY)
